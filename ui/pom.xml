@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>earth.eu.jtzipi</groupId>
+        <groupId>earth.eu.jtzipi.jameli</groupId>
         <artifactId>JaMeLi</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
