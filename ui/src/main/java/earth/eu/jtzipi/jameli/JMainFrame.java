@@ -30,6 +30,11 @@ public final class JMainFrame extends BorderPane {
 
     }
 
+    /**
+     * Return single instance.
+     *
+     * @return main Frame.
+     */
     static JMainFrame main() {
 
         return new JMainFrame();
