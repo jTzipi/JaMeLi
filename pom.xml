@@ -74,12 +74,26 @@
                 <artifactId>node</artifactId>
                 <version>${modules.version}</version>
             </dependency>
-
+            <!-- Modules :: io -->
             <dependency>
                 <groupId>earth.eu.jtzipi</groupId>
                 <artifactId>io</artifactId>
                 <version>${modules.version}</version>
             </dependency>
+            <!-- Modules :: utils -->
+            <dependency>
+                <groupId>earth.eu.jtzipi</groupId>
+                <artifactId>utils</artifactId>
+                <version>${modules.version}</version>
+            </dependency>
+            <!-- Modules :: fx -->
+            <dependency>
+                <groupId>earth.eu.jtzipi</groupId>
+                <artifactId>fx</artifactId>
+                <version>${modules.version}</version>
+            </dependency>
         </dependencies>
+
+
     </dependencyManagement>
 </project>
