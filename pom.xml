@@ -21,7 +21,7 @@
 
     <groupId>earth.eu.jtzipi.jameli</groupId>
     <artifactId>JaMeLi</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
     <name>Java Media Library</name>
 
@@ -43,7 +43,7 @@
 
 
         <slf4j.version>1.7.30</slf4j.version>
-        <modules.nodes.version>0.5.1</modules.nodes.version>
+        <modules.version>0.5.1</modules.version>
     </properties>
 
     <modules>
@@ -72,7 +72,13 @@
             <dependency>
                 <groupId>earth.eu.jtzipi</groupId>
                 <artifactId>node</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${modules.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>earth.eu.jtzipi</groupId>
+                <artifactId>io</artifactId>
+                <version>${modules.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
