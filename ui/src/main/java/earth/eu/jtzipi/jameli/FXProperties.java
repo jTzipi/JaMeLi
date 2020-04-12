@@ -16,6 +16,10 @@
 
 package earth.eu.jtzipi.jameli;
 
+import earth.eu.jtzipi.modules.node.path.IPathNode;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+
 /**
  * Properties shared.
  *
@@ -31,6 +35,11 @@ public final class FXProperties {
      * Main Frame height .
      */
     public static final double JMAIN_PANE_HEIGHT = 770D; // 750
+
+    /**
+     * Directory currently viewed.
+     */
+    public static final ObjectProperty<IPathNode> FX_CURRENT_DIR_PATH = new SimpleObjectProperty<>();
 
     private FXProperties() {
         // NO Access
