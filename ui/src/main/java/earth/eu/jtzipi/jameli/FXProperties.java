@@ -16,9 +16,15 @@
 
 package earth.eu.jtzipi.jameli;
 
+import earth.eu.jtzipi.jameli.tree.PathTreeItem;
+import earth.eu.jtzipi.modules.io.IOUtils;
 import earth.eu.jtzipi.modules.node.path.IPathNode;
+import earth.eu.jtzipi.modules.node.path.RegularPathNode;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.control.TreeItem;
+
+import java.nio.file.Path;
 
 /**
  * Properties shared.
@@ -40,6 +46,19 @@ public final class FXProperties {
      * Directory currently viewed.
      */
     public static final ObjectProperty<IPathNode> FX_CURRENT_DIR_PATH = new SimpleObjectProperty<>();
+
+    /**
+     * Root path.
+     */
+    public static final Path ROOT_PATH = IOUtils.getHomeDir();
+    /**
+     * Root node.
+     */
+    public static final IPathNode ROOT_PATH_NODE = RegularPathNode.of( ROOT_PATH, null );
+    /**
+     * Root Tree Item.
+     */
+    public static final TreeItem<IPathNode> ROOT_TREE_ITEM = PathTreeItem.of( ROOT_PATH_NODE );
 
     private FXProperties() {
         // NO Access

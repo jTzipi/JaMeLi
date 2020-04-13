@@ -16,12 +16,57 @@
 
 package earth.eu.jtzipi.jameli.main;
 
+import earth.eu.jtzipi.jameli.FXProperties;
+import earth.eu.jtzipi.jameli.tree.PathTreeCell;
+import earth.eu.jtzipi.modules.node.path.IPathNode;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.Pane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Directory Tree Pane.
  */
-public class JDirPane extends Pane {
+public final class JDirPane extends Pane {
+
+    private static final Logger LOG = LoggerFactory.getLogger( "JDirPane!" );
+
+    TreeView<IPathNode> dirTreeView;
 
 
+    JDirPane() {
+
+        createJDirPane();
+    }
+
+    private void createJDirPane() {
+
+        dirTreeView = new TreeView<>( FXProperties.ROOT_TREE_ITEM );
+        dirTreeView.setCellFactory( ( cb ) -> new PathTreeCell() );
+        dirTreeView.getSelectionModel().selectedItemProperty().addListener( ( ( observableValue, oldValue, newValue ) -> onPathTreeSelectionChanged( oldValue, newValue ) ) );
+
+
+        getChildren().add( dirTreeView );
+
+
+    }
+
+    private void onPathTreeSelectionChanged( TreeItem<IPathNode> oldNode, TreeItem<IPathNode> newNode ) {
+
+        // we did not select node before or new node is null
+        // return
+        if ( null == oldNode || null == newNode ) {
+
+            LOG.debug( "Old Path[" + oldNode + "] or new Path[" + newNode + "] is null onPathTreeSelectionChanged" );
+
+            return;
+        }
+
+
+        IPathNode newPathNode = newNode.getValue();
+        LOG.warn( "TP Changed from " + oldNode.getValue() + " > " + newPathNode );
+
+        FXProperties.FX_CURRENT_DIR_PATH.setValue( newPathNode );
+    }
 }

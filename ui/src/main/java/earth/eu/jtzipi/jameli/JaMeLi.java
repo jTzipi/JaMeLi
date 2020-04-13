@@ -16,6 +16,7 @@
 
 package earth.eu.jtzipi.jameli;
 
+import earth.eu.jtzipi.jameli.main.JMainFrame;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
