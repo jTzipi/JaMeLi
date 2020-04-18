@@ -41,8 +41,9 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-
+        <jackson.version>2.10.3</jackson.version>
         <slf4j.version>1.7.30</slf4j.version>
+        <hibernate.version>5.4.10</hibernate.version>
         <modules.version>0.5.1</modules.version>
     </properties>
 
@@ -96,4 +97,8 @@
 
 
     </dependencyManagement>
+
+    <build>
+
+    </build>
 </project>
