@@ -23,6 +23,7 @@ import earth.eu.jtzipi.modules.node.path.RegularPathNode;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.TreeItem;
+import javafx.stage.Stage;
 
 import java.nio.file.Path;
 
@@ -35,13 +36,19 @@ public final class FXProperties {
 
     /**
      * Main Frame width.
+     * Fallback if ui.properties is not readable.
      */
     public static final double JMAIN_PANE_WIDTH = 1000D;
     /**
      * Main Frame height .
+     * Fallback if ui.properties is not readable.
      */
     public static final double JMAIN_PANE_HEIGHT = 770D; // 750
 
+    /**
+     * Main stage.
+     */
+    private static Stage MAIN_STAGE;
     /**
      * Directory currently viewed.
      */
@@ -60,6 +67,27 @@ public final class FXProperties {
      */
     public static final TreeItem<IPathNode> ROOT_TREE_ITEM = PathTreeItem.of( ROOT_PATH_NODE );
 
+    /**
+     * Set main stage.
+     *
+     * @param stage stage
+     */
+    static void setMainStage( Stage stage ) {
+        MAIN_STAGE = stage;
+    }
+
+    /**
+     * Return primary stage.
+     *
+     * @return main stage
+     */
+    public static Stage getPrimaryStage() {
+        return MAIN_STAGE;
+    }
+
+    /**
+     * Access forbidden.
+     */
     private FXProperties() {
         // NO Access
         throw new AssertionError( "Fault!" );
