@@ -20,7 +20,9 @@ import earth.eu.jtzipi.jameli.tree.PathTreeItem;
 import earth.eu.jtzipi.modules.io.IOUtils;
 import earth.eu.jtzipi.modules.node.path.IPathNode;
 import earth.eu.jtzipi.modules.node.path.RegularPathNode;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
@@ -63,9 +65,15 @@ public final class FXProperties {
      */
     public static final IPathNode ROOT_PATH_NODE = RegularPathNode.of( ROOT_PATH, null );
     /**
-     * Root Tree Item.
+     * Directory Tree Item.
+     * T
      */
-    public static final TreeItem<IPathNode> ROOT_TREE_ITEM = PathTreeItem.of( ROOT_PATH_NODE );
+    public static final TreeItem<IPathNode> DIR_TREE_ITEM = PathTreeItem.of( ROOT_PATH_NODE );
+
+    /**
+     * Default 3px inset.
+     */
+    public static final DoubleProperty FX_DEF_INSET_PROP = new SimpleDoubleProperty( 3D );
 
     /**
      * Set main stage.

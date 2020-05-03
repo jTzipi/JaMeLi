@@ -60,12 +60,13 @@ public final class JaMeLi extends Application {
 
         try {
             Resources.init();
-            Resources.loadResources().thenRun( this::initStage );
+            Resources.loadResources().thenRun( () -> LOGGER.info( "Resource read" ) );
         } catch ( IOException e ) {
             LOGGER.error( "[?] could not init", e );
             System.exit( 2 );
         }
 
+        initStage();
     }
 
     /**
@@ -74,11 +75,15 @@ public final class JaMeLi extends Application {
      * read misc from Prop
      */
     private void initStage() {
+
+
         Stage stage = FXProperties.getPrimaryStage();
         Scene scene = new Scene( JMainFrame.main(), FXProperties.JMAIN_PANE_WIDTH, FXProperties.JMAIN_PANE_HEIGHT );
 
         stage.setTitle( "JaMLib" );
         stage.setScene( scene );
         stage.show();
+
+
     }
 }

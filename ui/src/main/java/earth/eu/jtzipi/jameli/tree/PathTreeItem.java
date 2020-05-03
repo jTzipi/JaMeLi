@@ -35,7 +35,11 @@ public class PathTreeItem extends TreeItem<IPathNode> {
 
     private boolean created;    // sub nodes created
 
-
+    /**
+     * PathTreeItem.
+     *
+     * @param pathNode node wrapped
+     */
     PathTreeItem( IPathNode pathNode ) {
         super( pathNode );
         this.created = false;
@@ -46,9 +50,10 @@ public class PathTreeItem extends TreeItem<IPathNode> {
      *
      * @param pathNode path node
      * @return created instance
+     * @throws NullPointerException if {@code pathNode} is null
      */
     public static PathTreeItem of( IPathNode pathNode ) {
-        return Objects.requireNonNull( new PathTreeItem( pathNode ) );
+        return new PathTreeItem( Objects.requireNonNull( pathNode ) );
     }
 
     @Override

@@ -19,6 +19,9 @@ package earth.eu.jtzipi.jameli.main;
 import earth.eu.jtzipi.jameli.FXProperties;
 import earth.eu.jtzipi.jameli.tree.PathTreeCell;
 import earth.eu.jtzipi.modules.node.path.IPathNode;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.Pane;
@@ -27,46 +30,91 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Directory Tree Pane.
+ *
+ * @author
  */
 public final class JDirPane extends Pane {
 
     private static final Logger LOG = LoggerFactory.getLogger( "JDirPane!" );
 
-    TreeView<IPathNode> dirTreeView;
+    private TreeView<IPathNode> dirTreeView;
+    private ObjectProperty<TreeItem<IPathNode>> fxDirTreeItemProp = new SimpleObjectProperty<>( this, "FX_DIR_TREE_ITEM_PROP", FXProperties.DIR_TREE_ITEM );
 
 
     JDirPane() {
 
+
         createJDirPane();
+        initListener();
     }
+
+    ObjectProperty<TreeItem<IPathNode>> getFxDirTreeItemProp() {
+        return fxDirTreeItemProp;
+    }
+
+    private void initListener() {
+
+        FXProperties.FX_CURRENT_DIR_PATH.addListener( this::onDirPathChanged );
+        this.fxDirTreeItemProp.addListener( this::onFxDirItemPropChange );
+    }
+
 
     private void createJDirPane() {
 
-        dirTreeView = new TreeView<>( FXProperties.ROOT_TREE_ITEM );
+        dirTreeView = new TreeView<>( FXProperties.DIR_TREE_ITEM );
         dirTreeView.setCellFactory( ( cb ) -> new PathTreeCell() );
-        dirTreeView.getSelectionModel().selectedItemProperty().addListener( ( ( observableValue, oldValue, newValue ) -> onPathTreeSelectionChanged( oldValue, newValue ) ) );
-
+        dirTreeView.getSelectionModel().selectedItemProperty().addListener( this::onPathTreeSelectionChanged );
 
         getChildren().add( dirTreeView );
 
 
     }
 
-    private void onPathTreeSelectionChanged( TreeItem<IPathNode> oldNode, TreeItem<IPathNode> newNode ) {
+
+    /**
+     * Tree Selection Changed.
+     *
+     * @param oldNode old path node
+     * @param newNode new path node
+     */
+    private void onPathTreeSelectionChanged( ObservableValue<? extends TreeItem<IPathNode>> observableValue, TreeItem<IPathNode> oldNode, TreeItem<IPathNode> newNode ) {
 
         // we did not select node before or new node is null
         // return
-        if ( null == oldNode || null == newNode ) {
+        if ( null != newNode && newNode != oldNode ) {
 
-            LOG.debug( "Old Path[" + oldNode + "] or new Path[" + newNode + "] is null onPathTreeSelectionChanged" );
 
-            return;
+            this.fxDirTreeItemProp.setValue( newNode );
+            IPathNode newPathNode = newNode.getValue();
+
+            FXProperties.FX_CURRENT_DIR_PATH.setValue( newPathNode );
         }
 
 
-        IPathNode newPathNode = newNode.getValue();
-        LOG.warn( "TP Changed from " + oldNode.getValue() + " > " + newPathNode );
-
-        FXProperties.FX_CURRENT_DIR_PATH.setValue( newPathNode );
     }
+
+    private void onFxDirItemPropChange( ObservableValue<? extends TreeItem<IPathNode>> observableValue, TreeItem<IPathNode> oldNode, TreeItem<IPathNode> newNode ) {
+        LOG.warn( "Bei FX Dir Changed " + newNode + "'  '" + oldNode + "'" );
+        if ( null != newNode && newNode != oldNode ) {
+            dirTreeView.getSelectionModel().select( newNode );
+            int row = dirTreeView.getRow( newNode );
+            dirTreeView.scrollTo( row );
+            newNode.setExpanded( true );
+
+        }
+    }
+
+    private void onDirPathChanged( ObservableValue<? extends IPathNode> obs, IPathNode oldPath, IPathNode newPath ) {
+
+        LOG.warn( "Dir Path changed from '" + oldPath + "' to '" + newPath.getName() + "'" );
+        if ( null == newPath || oldPath == newPath ) {
+
+            LOG.warn( "new path is null or old path == new path" );
+            return;
+        }
+
+        // TODO change fxTreeItemProp too
+
+    }
+
 }

@@ -43,7 +43,7 @@ public class PathTreeCell extends TreeCell<IPathNode> {
 
 
         if ( null == node ) {
-            LOGGER.warn( "Node is null" );
+            //LOGGER.warn( "Node is null" );
             text = "";
         } else if ( empty ) {
 

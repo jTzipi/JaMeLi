@@ -44,6 +44,7 @@
         <jackson.version>2.10.3</jackson.version>
         <slf4j.version>1.7.30</slf4j.version>
         <hibernate.version>5.4.10</hibernate.version>
+        <cfxversion>8.40.14</cfxversion>
         <modules.version>0.5.1</modules.version>
     </properties>
 
@@ -68,6 +69,12 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.controlsfx</groupId>
+                <artifactId>controlsfx</artifactId>
+                <version>${cfxversion}</version>
             </dependency>
             <!-- Modules :: node -->
             <dependency>

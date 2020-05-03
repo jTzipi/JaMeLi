@@ -26,6 +26,7 @@ import javafx.scene.layout.BorderPane;
  */
 public final class JMainFrame extends BorderPane {
 
+
     private JMainFrame() {
         setPrefWidth( FXProperties.JMAIN_PANE_WIDTH );
         setPrefHeight( FXProperties.JMAIN_PANE_HEIGHT );
@@ -40,6 +41,7 @@ public final class JMainFrame extends BorderPane {
      */
     public static JMainFrame main() {
 
+
         return new JMainFrame();
     }
 
@@ -47,6 +49,12 @@ public final class JMainFrame extends BorderPane {
     private void createJMainFrame() {
 
         JDirPane dirPane = new JDirPane();
+
+
+        JBreadCrumbPathPanel breadCrumbPathPanel = new JBreadCrumbPathPanel();
+        breadCrumbPathPanel.bindDirTreeProperty( dirPane.getFxDirTreeItemProp() );
+
         setLeft( dirPane );
+        setTop( breadCrumbPathPanel );
     }
 }
