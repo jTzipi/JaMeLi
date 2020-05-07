@@ -28,6 +28,7 @@ import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
 
 import java.nio.file.Path;
+import java.util.function.Predicate;
 
 /**
  * Properties shared.
@@ -51,6 +52,8 @@ public final class FXProperties {
      * Main stage.
      */
     private static Stage MAIN_STAGE;
+
+    public static ObjectProperty<Predicate<IPathNode>> FX_PATH_NODE_FILTER_PROP = new SimpleObjectProperty<>( pathNode -> true );
     /**
      * Directory currently viewed.
      */

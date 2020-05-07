@@ -16,14 +16,17 @@
 
 package earth.eu.jtzipi.jameli.tree;
 
+import earth.eu.jtzipi.jameli.FXProperties;
+import earth.eu.jtzipi.modules.io.IOUtils;
 import earth.eu.jtzipi.modules.node.path.IPathNode;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +37,7 @@ import java.util.stream.Collectors;
 public class PathTreeItem extends TreeItem<IPathNode> {
 
     private boolean created;    // sub nodes created
+    // private BooleanBinding FX_CREATE_BINDING =
 
     /**
      * PathTreeItem.
@@ -43,6 +47,23 @@ public class PathTreeItem extends TreeItem<IPathNode> {
     PathTreeItem( IPathNode pathNode ) {
         super( pathNode );
         this.created = false;
+        FXProperties.FX_PATH_NODE_FILTER_PROP.addListener( this::onDirFilterChanged );
+
+    }
+
+    private static List<TreeItem<IPathNode>> createSubTree( IPathNode pathNode, Predicate<IPathNode> pp ) {
+
+
+        // get all dirs of pathNode
+        // map them to tree item
+        List<TreeItem<IPathNode>> subDirL = pathNode
+                .getSubnodes( IOUtils.PATH_ACCEPT_ALL )
+                .stream()
+                .filter( pp )
+                .map( PathTreeItem::of )
+                .collect( Collectors.toList() );
+
+        return subDirL;
     }
 
     /**
@@ -56,10 +77,22 @@ public class PathTreeItem extends TreeItem<IPathNode> {
         return new PathTreeItem( Objects.requireNonNull( pathNode ) );
     }
 
+    private void onDirFilterChanged( ObservableValue<? extends Predicate<IPathNode>> pnObs, Predicate<IPathNode> ppnOld, Predicate<IPathNode> ppNew ) {
+
+        if ( null != ppNew && ppnOld != ppNew ) {
+            this.created = false;
+        }
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return getValue().isLeaf();
+    }
+
     @Override
     public ObservableList<TreeItem<IPathNode>> getChildren() {
-        IPathNode pathNode = getValue();
 
+        IPathNode pathNode = getValue();
         if ( null == pathNode || !pathNode.isDir() ) {
 
             return FXCollections.emptyObservableList();
@@ -67,22 +100,12 @@ public class PathTreeItem extends TreeItem<IPathNode> {
 
         if ( !created ) {
 
-            // get all dirs of pathNode
-            // map them to tree item
-            List<TreeItem<IPathNode>> subDirL = pathNode
-                    .getSubnodes( Files::isDirectory )
-                    .stream()
-                    .map( PathTreeItem::of )
-                    .collect( Collectors.toList() );
-            super.getChildren().setAll( subDirL );
+            super.getChildren().setAll( createSubTree( pathNode, FXProperties.FX_PATH_NODE_FILTER_PROP.getValue() ) );
             created = true;
         }
 
         return super.getChildren();
     }
 
-    @Override
-    public boolean isLeaf() {
-        return getValue().isLeaf();
-    }
+
 }

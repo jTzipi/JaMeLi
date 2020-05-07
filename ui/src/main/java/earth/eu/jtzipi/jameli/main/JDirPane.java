@@ -22,23 +22,26 @@ import earth.eu.jtzipi.modules.node.path.IPathNode;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.Pane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Predicate;
+
 /**
  * Directory Tree Pane.
  *
- * @author
+ * @author jTzipi
  */
 public final class JDirPane extends Pane {
 
     private static final Logger LOG = LoggerFactory.getLogger( "JDirPane!" );
 
     private TreeView<IPathNode> dirTreeView;
-    private ObjectProperty<TreeItem<IPathNode>> fxDirTreeItemProp = new SimpleObjectProperty<>( this, "FX_DIR_TREE_ITEM_PROP", FXProperties.DIR_TREE_ITEM );
+    private final ObjectProperty<TreeItem<IPathNode>> fxDirTreeItemProp = new SimpleObjectProperty<>( this, "FX_DIR_TREE_ITEM_PROP", FXProperties.DIR_TREE_ITEM );
 
 
     JDirPane() {
@@ -54,7 +57,9 @@ public final class JDirPane extends Pane {
 
     private void initListener() {
 
+        // Add Change Listener to global Directory Path Prop
         FXProperties.FX_CURRENT_DIR_PATH.addListener( this::onDirPathChanged );
+        // Add Change Listener to own directory tree item prop
         this.fxDirTreeItemProp.addListener( this::onFxDirItemPropChange );
     }
 
@@ -65,9 +70,14 @@ public final class JDirPane extends Pane {
         dirTreeView.setCellFactory( ( cb ) -> new PathTreeCell() );
         dirTreeView.getSelectionModel().selectedItemProperty().addListener( this::onPathTreeSelectionChanged );
 
+        ToggleButton pathHiddenTB = new ToggleButton();
+        pathHiddenTB.setOnAction( ae -> updatePathFilter() );
+
+        ToggleButton pathLinkedTB = new ToggleButton();
+        pathLinkedTB.setOnAction( ae -> updatePathFilter() );
         getChildren().add( dirTreeView );
 
-
+        // dirTreeView.get
     }
 
 
@@ -106,15 +116,42 @@ public final class JDirPane extends Pane {
 
     private void onDirPathChanged( ObservableValue<? extends IPathNode> obs, IPathNode oldPath, IPathNode newPath ) {
 
-        LOG.warn( "Dir Path changed from '" + oldPath + "' to '" + newPath.getName() + "'" );
+
         if ( null == newPath || oldPath == newPath ) {
 
             LOG.warn( "new path is null or old path == new path" );
             return;
         }
-
+        LOG.warn( "Dir Path changed from '" + oldPath + "' to '" + newPath.getName() + "'" );
         // TODO change fxTreeItemProp too
+        int row = search( newPath );
 
+        if ( row < 0 ) {
+            LOG.warn( "node not '" + newPath + "'" );
+        } else {
+            TreeItem<IPathNode> item = dirTreeView.getTreeItem( row );
+            item.setExpanded( true );
+            dirTreeView.scrollTo( row );
+        }
     }
 
+    private void setDirFilter( Predicate<IPathNode> ppn ) {
+        FXProperties.FX_PATH_NODE_FILTER_PROP.setValue( ppn );
+        this.dirTreeView.refresh();
+    }
+
+    private int search( IPathNode node ) {
+
+        for ( int i = 0; i < dirTreeView.getExpandedItemCount(); i++ ) {
+            TreeItem<IPathNode> pti = dirTreeView.getTreeItem( i );
+            if ( pti.getValue().getValue().equals( node.getValue() ) ) {
+                return i;
+            }
+        }
+        return -9;
+    }
+
+    private void updatePathFilter() {
+
+    }
 }
