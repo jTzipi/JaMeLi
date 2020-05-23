@@ -16,15 +16,12 @@
 
 package earth.eu.jtzipi.jameli;
 
-import earth.eu.jtzipi.jameli.tree.PathTreeItem;
 import earth.eu.jtzipi.modules.io.IOUtils;
 import earth.eu.jtzipi.modules.node.path.IPathNode;
-import earth.eu.jtzipi.modules.node.path.RegularPathNode;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
 
 import java.nio.file.Path;
@@ -53,7 +50,11 @@ public final class FXProperties {
      */
     private static Stage MAIN_STAGE;
 
-    public static ObjectProperty<Predicate<IPathNode>> FX_PATH_NODE_FILTER_PROP = new SimpleObjectProperty<>( pathNode -> true );
+    /**
+     * Filter of directory tree.
+     */
+    public static ObjectProperty<Predicate<IPathNode>> FX_PATH_NODE_FILTER_PROP = new SimpleObjectProperty<>( IPathNode.ACCEPT_DIR_VISIBLE_NO_LINK );
+
     /**
      * Directory currently viewed.
      */
@@ -63,15 +64,7 @@ public final class FXProperties {
      * Root path.
      */
     public static final Path ROOT_PATH = IOUtils.getHomeDir();
-    /**
-     * Root node.
-     */
-    public static final IPathNode ROOT_PATH_NODE = RegularPathNode.of( ROOT_PATH, null );
-    /**
-     * Directory Tree Item.
-     * T
-     */
-    public static final TreeItem<IPathNode> DIR_TREE_ITEM = PathTreeItem.of( ROOT_PATH_NODE );
+
 
     /**
      * Default 3px inset.

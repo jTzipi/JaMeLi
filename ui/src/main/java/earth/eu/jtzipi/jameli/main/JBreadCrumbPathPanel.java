@@ -53,19 +53,20 @@ public class JBreadCrumbPathPanel extends HBox {
     void bindDirTreeProperty( ObjectProperty<TreeItem<IPathNode>> treeItemProp ) {
         Objects.requireNonNull( treeItemProp );
         this.pathBCBar.selectedCrumbProperty().bindBidirectional( treeItemProp );
+        this.pathBCBar.setSelectedCrumb( treeItemProp.getValue() );
     }
 
     private void createJPathPane() {
 
-        this.pathBCBar = new BreadCrumbBar<>( FXProperties.DIR_TREE_ITEM );
-        this.pathBCBar.setAutoNavigationEnabled( false );
+        this.pathBCBar = new BreadCrumbBar<>();
+        //  this.pathBCBar.setAutoNavigationEnabled( false );
         this.pathBCBar.setCrumbFactory( cback -> new BreadCrumbBarSkin.BreadCrumbButton( cback.getValue().getName() ) );
         // IMPORTANT: We can not use crumb selected property because this is not
         //            updated when we click the button. We need to set this here
         this.pathBCBar.setOnCrumbAction( ae -> this.pathBCBar.setSelectedCrumb( ae.getSelectedCrumb() ) );
         getChildren().add( pathBCBar );
 
-        setPadding( new Insets( 3D ) );
+        setPadding( new Insets( FXProperties.FX_DEF_INSET_PROP.doubleValue() ) );
     }
 
 }

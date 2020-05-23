@@ -17,27 +17,46 @@
 package earth.eu.jtzipi.jameli.tree;
 
 import earth.eu.jtzipi.jameli.FXProperties;
-import earth.eu.jtzipi.modules.io.IOUtils;
 import earth.eu.jtzipi.modules.node.path.IPathNode;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Tree Item displaying {@linkplain IPathNode}'s.
+ * <p>
+ * <b>
+ * Directory Tree Item of filesystem path.
+ * </b>
+ * <p>
+ * <p>
+ * Important details.
+ * <p>
+ * We use a 'double' cache strategy here.
+ * Since we wrap {@link IPathNode} we have already a cached
+ * loading of sub nodes. In that case we load always all nodes from a
+ * directory. Here we filter all directories from that path nodes.
+ * <p>
+ * TODO: check whether wrapped node contains directories. If not we do not need to create sub nodes anyway.
+ * TODO: check for fs change
+ *
+ * <u>Important:</u>
+ *
+ *
+ *
+ * </p>
  *
  * @author jTzipi
  */
 public class PathTreeItem extends TreeItem<IPathNode> {
 
     private boolean created;    // sub nodes created
-    // private BooleanBinding FX_CREATE_BINDING =
 
     /**
      * PathTreeItem.
@@ -47,24 +66,9 @@ public class PathTreeItem extends TreeItem<IPathNode> {
     PathTreeItem( IPathNode pathNode ) {
         super( pathNode );
         this.created = false;
-        FXProperties.FX_PATH_NODE_FILTER_PROP.addListener( this::onDirFilterChanged );
 
     }
 
-    private static List<TreeItem<IPathNode>> createSubTree( IPathNode pathNode, Predicate<IPathNode> pp ) {
-
-
-        // get all dirs of pathNode
-        // map them to tree item
-        List<TreeItem<IPathNode>> subDirL = pathNode
-                .getSubnodes( IOUtils.PATH_ACCEPT_ALL )
-                .stream()
-                .filter( pp )
-                .map( PathTreeItem::of )
-                .collect( Collectors.toList() );
-
-        return subDirL;
-    }
 
     /**
      * Create a new instance.
@@ -77,35 +81,78 @@ public class PathTreeItem extends TreeItem<IPathNode> {
         return new PathTreeItem( Objects.requireNonNull( pathNode ) );
     }
 
-    private void onDirFilterChanged( ObservableValue<? extends Predicate<IPathNode>> pnObs, Predicate<IPathNode> ppnOld, Predicate<IPathNode> ppNew ) {
-
-        if ( null != ppNew && ppnOld != ppNew ) {
-            this.created = false;
-        }
-    }
 
     @Override
     public boolean isLeaf() {
         return getValue().isLeaf();
     }
 
+    private static List<TreeItem<IPathNode>> createSubTree( IPathNode pathNode ) {
+
+
+        // get all dirs of pathNode
+        // map them to tree item
+
+        List<TreeItem<IPathNode>> tioL = new ArrayList<>();
+        Predicate<IPathNode> pp = FXProperties.FX_PATH_NODE_FILTER_PROP.getValue();
+        for ( IPathNode pn : pathNode.getSubnodes() ) {
+
+            if ( pp.test( pn ) ) {
+                tioL.add( PathTreeItem.of( pn ) );
+            }
+        }
+
+        return tioL;
+    }
+
     @Override
     public ObservableList<TreeItem<IPathNode>> getChildren() {
 
-        IPathNode pathNode = getValue();
-        if ( null == pathNode || !pathNode.isDir() ) {
+        if ( !this.created ) {
 
-            return FXCollections.emptyObservableList();
-        }
+            this.created = true;
+            IPathNode pathNode = getValue();
+            ObservableList<TreeItem<IPathNode>> subOL;
 
-        if ( !created ) {
 
-            super.getChildren().setAll( createSubTree( pathNode, FXProperties.FX_PATH_NODE_FILTER_PROP.getValue() ) );
-            created = true;
+            // if leaf empty
+            if ( isLeaf() || pathNode == null ) {
+
+                subOL = FXCollections.emptyObservableList();
+
+            } else {
+
+                subOL = FXCollections.observableArrayList();
+                subOL.addAll( createSubTree( pathNode ) );
+                FXProperties.FX_PATH_NODE_FILTER_PROP.addListener( this::onDirFilterChanged );
+            }
+            super.getChildren().setAll( subOL );
+
         }
 
         return super.getChildren();
     }
 
+    /**
+     * On directory filter changed.
+     *
+     * @param pnObs  obs
+     * @param ppnOld old predicate
+     * @param ppNew  new predicate
+     */
+    private void onDirFilterChanged( ObservableValue<? extends Predicate<IPathNode>> pnObs, Predicate<IPathNode> ppnOld, Predicate<IPathNode> ppNew ) {
 
+        //
+        // here we do only set sub nodes if this node have loaded
+        // it's subnodes.
+        // TODO: restore expanded status
+        //
+        if ( ppnOld != ppNew && null != ppNew && created ) {
+
+            super.getChildren().setAll( createSubTree( getValue() ) );
+
+        }
+
+
+    }
 }

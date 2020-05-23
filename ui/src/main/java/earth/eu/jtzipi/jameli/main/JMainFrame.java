@@ -50,10 +50,8 @@ public final class JMainFrame extends BorderPane {
 
         JDirPane dirPane = new JDirPane();
 
-
         JBreadCrumbPathPanel breadCrumbPathPanel = new JBreadCrumbPathPanel();
-        breadCrumbPathPanel.bindDirTreeProperty( dirPane.getFxDirTreeItemProp() );
-
+        breadCrumbPathPanel.bindDirTreeProperty( dirPane.getTreeItemProp() );
         setLeft( dirPane );
         setTop( breadCrumbPathPanel );
     }

@@ -18,6 +18,7 @@ package earth.eu.jtzipi.jameli;
 
 import earth.eu.jtzipi.jameli.main.JMainFrame;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -63,7 +64,7 @@ public final class JaMeLi extends Application {
             Resources.loadResources().thenRun( () -> LOGGER.info( "Resource read" ) );
         } catch ( IOException e ) {
             LOGGER.error( "[?] could not init", e );
-            System.exit( 2 );
+            Platform.exit();
         }
 
         initStage();
