@@ -17,6 +17,7 @@
 package earth.eu.jtzipi.jameli;
 
 import earth.eu.jtzipi.jameli.main.JMainFrame;
+import earth.eu.jtzipi.modules.node.path.RegularPathNode;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -62,6 +63,9 @@ public final class JaMeLi extends Application {
         try {
             Resources.init();
             Resources.loadResources().thenRun( () -> LOGGER.info( "Resource read" ) );
+
+            // Todo: read from ini
+            FXProperties.FX_CURRENT_DIR_PATH.setValue( RegularPathNode.of( FXProperties.ROOT_PATH, null ) );
         } catch ( IOException e ) {
             LOGGER.error( "[?] could not init", e );
             Platform.exit();

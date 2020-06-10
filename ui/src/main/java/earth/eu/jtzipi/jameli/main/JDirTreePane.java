@@ -20,7 +20,6 @@ import earth.eu.jtzipi.jameli.FXProperties;
 import earth.eu.jtzipi.jameli.tree.PathTreeCell;
 import earth.eu.jtzipi.jameli.tree.PathTreeItem;
 import earth.eu.jtzipi.modules.node.path.IPathNode;
-import earth.eu.jtzipi.modules.node.path.RegularPathNode;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -45,7 +44,7 @@ import java.util.function.Predicate;
  *
  * @author jTzipi
  */
-public final class JDirPane extends Pane {
+public final class JDirTreePane extends Pane {
 
     private static final Logger LOG = LoggerFactory.getLogger( "JDirPane!" );
 
@@ -56,7 +55,7 @@ public final class JDirPane extends Pane {
     private ObjectProperty<TreeItem<IPathNode>> fxTreeItemProp = new SimpleObjectProperty<>( this, "FX_TREE_ITEM_PROP" );
 
 
-    JDirPane() {
+    JDirTreePane() {
 
 
         createJDirPane();
@@ -68,7 +67,7 @@ public final class JDirPane extends Pane {
     private void initListener() {
 
         // Add Change Listener to global Directory Path Prop
-        //FXProperties.FX_CURRENT_DIR_PATH.addListener( this::onDirPathChanged );
+        FXProperties.FX_CURRENT_DIR_PATH.addListener( this::onDirPathChanged );
 
 
         // Add Change Listener to own directory tree item prop
@@ -80,9 +79,9 @@ public final class JDirPane extends Pane {
 
         BorderPane borderPane = new BorderPane();
         // root node
-        IPathNode rootNode = RegularPathNode.of( FXProperties.ROOT_PATH, null );
+        // IPathNode rootNode = RegularPathNode.of( FXProperties.ROOT_PATH, null );
         // root tree item
-        TreeItem<IPathNode> rootTreeItem = PathTreeItem.of( rootNode );
+        TreeItem<IPathNode> rootTreeItem = PathTreeItem.of( FXProperties.FX_CURRENT_DIR_PATH.getValue() );
         // set this to initial tree item prop
         fxTreeItemProp.setValue( rootTreeItem );
 
@@ -117,8 +116,16 @@ public final class JDirPane extends Pane {
     }
 
     /**
-     * Tree Selection Changed.
+     * {@code dirTreeView selection Changed handler.
      *
+     * <code>Pre:</code>
+     * 1. First check that new node is not null -> no info
+     * 2. Check that old node is not new node -> nothing todo.
+     * <br>
+     * <code>Do:</code>
+     * 1. Set {@code newNode} to {@code fxTreeItemProp}. Setting the breadcrumb bar of
+     * {@linkplain JBreadCrumbPathPanel}.
+     * 2. Update @linkplain FXProperties
      * @param oldNode old path node
      * @param newNode new path node
      */
@@ -152,22 +159,28 @@ public final class JDirPane extends Pane {
     private void onDirPathChanged( ObservableValue<? extends IPathNode> obs, IPathNode oldPath, IPathNode newPath ) {
 
 
-        if ( null == newPath || null == oldPath || oldPath == newPath ) {
+        if ( null == newPath || oldPath == newPath ) {
 
             LOG.warn( "new path is null or old path == new path" );
             return;
         }
 
-        LOG.warn( "Dir Path changed from '" + oldPath.getName() + "' to '" + newPath.getName() + "'" );
+        LOG.warn( "Dir Path changed from '" + oldPath + "' to '" + newPath.getName() + "'" );
+
+
         // TODO change fxTreeItemProp too
         int row = search( newPath );
 
         if ( row < 0 ) {
             LOG.warn( "node not '" + newPath + "'" );
         } else {
-            TreeItem<IPathNode> item = dirTreeView.getTreeItem( row );
-            item.setExpanded( true );
-            dirTreeView.scrollTo( row );
+            // Scroll to new dir if not focused only
+            // this is the case when we receive this event not from this tree
+            if ( !isFocused() ) {
+                TreeItem<IPathNode> item = dirTreeView.getTreeItem( row );
+                item.setExpanded( true );
+                dirTreeView.scrollTo( row );
+            }
         }
     }
 

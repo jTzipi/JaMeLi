@@ -149,6 +149,7 @@ public class PathTreeItem extends TreeItem<IPathNode> {
         //
         if ( ppnOld != ppNew && null != ppNew && created ) {
 
+
             super.getChildren().setAll( createSubTree( getValue() ) );
 
         }

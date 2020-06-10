@@ -17,6 +17,7 @@
 package earth.eu.jtzipi.jameli.main;
 
 import earth.eu.jtzipi.jameli.FXProperties;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 
 /**
@@ -48,11 +49,17 @@ public final class JMainFrame extends BorderPane {
 
     private void createJMainFrame() {
 
-        JDirPane dirPane = new JDirPane();
-
+        JDirTreePane dirPane = new JDirTreePane();
+        JDirectoryViewPane dirViewPane = new JDirectoryViewPane();
         JBreadCrumbPathPanel breadCrumbPathPanel = new JBreadCrumbPathPanel();
         breadCrumbPathPanel.bindDirTreeProperty( dirPane.getTreeItemProp() );
+
+        ScrollPane dirViewScrPane = new ScrollPane( dirViewPane );
+        dirViewScrPane.setFitToHeight( true );
+        dirViewScrPane.setFitToWidth( true );
+
         setLeft( dirPane );
         setTop( breadCrumbPathPanel );
+        setCenter( dirViewScrPane );
     }
 }
