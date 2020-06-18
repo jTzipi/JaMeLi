@@ -191,11 +191,19 @@ public final class JDirTreePane extends Pane {
 
     /**
      * Search <code>dirTreeView</code> for row of node.
+     * <p>
+     * If we did not display root node and want to scroll to root we
+     * return 0 to scroll to first.
      *
      * @param node node
      * @return index or negative
      */
     private int search( IPathNode node ) {
+
+        // if we do not display root and want to show root dir return 0
+        if ( !dirTreeView.isShowRoot() && node.getValue() == FXProperties.ROOT_PATH ) {
+            return 0;
+        }
 
         for ( int i = 0; i < dirTreeView.getExpandedItemCount(); i++ ) {
             TreeItem<IPathNode> pti = dirTreeView.getTreeItem( i );
