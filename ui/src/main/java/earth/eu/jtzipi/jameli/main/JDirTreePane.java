@@ -52,7 +52,7 @@ public final class JDirTreePane extends Pane {
 
     private ToggleButton pathHiddenTogB;
     private ToggleButton pathLinkedTogB;
-    private ObjectProperty<TreeItem<IPathNode>> fxTreeItemProp = new SimpleObjectProperty<>( this, "FX_TREE_ITEM_PROP" );
+    private final ObjectProperty<TreeItem<IPathNode>> fxTreeItemProp = new SimpleObjectProperty<>( this, "FX_TREE_ITEM_PROP" );
 
 
     JDirTreePane() {
@@ -120,7 +120,7 @@ public final class JDirTreePane extends Pane {
      *
      * <code>Pre:</code>
      * 1. First check that new node is not null -> no info
-     * 2. Check that old node is not new node -> nothing todo.
+     * 2. Check that old node is not new node -> nothing.
      * <br>
      * <code>Do:</code>
      * 1. Set {@code newNode} to {@code fxTreeItemProp}. Setting the breadcrumb bar of
@@ -136,8 +136,10 @@ public final class JDirTreePane extends Pane {
             LOG.debug( "newNode=" + newNode + " oldNode=" + oldNode );
             return;
         }
-
+        // Update breadcrumb
         fxTreeItemProp.setValue( newNode );
+        // Update Dir prop
+        FXProperties.FX_CURRENT_DIR_PATH.setValue( newNode.getValue() );
     }
 
     private void onFxDirItemPropChange( ObservableValue<? extends TreeItem<IPathNode>> observableValue, TreeItem<IPathNode> oldNode, TreeItem<IPathNode> newNode ) {
@@ -168,24 +170,31 @@ public final class JDirTreePane extends Pane {
         LOG.warn( "Dir Path changed from '" + oldPath + "' to '" + newPath.getName() + "'" );
 
 
-        // TODO change fxTreeItemProp too
+        // row for dir
         int row = search( newPath );
-
+        // Illegal row!?
         if ( row < 0 ) {
             LOG.warn( "node not '" + newPath + "'" );
         } else {
             // Scroll to new dir if not focused only
             // this is the case when we receive this event not from this tree
             if ( !isFocused() ) {
+
                 TreeItem<IPathNode> item = dirTreeView.getTreeItem( row );
                 item.setExpanded( true );
+                fxTreeItemProp.setValue( item ); // ;
                 dirTreeView.scrollTo( row );
             }
         }
     }
 
 
-
+    /**
+     * Search <code>dirTreeView</code> for row of node.
+     *
+     * @param node node
+     * @return index or negative
+     */
     private int search( IPathNode node ) {
 
         for ( int i = 0; i < dirTreeView.getExpandedItemCount(); i++ ) {

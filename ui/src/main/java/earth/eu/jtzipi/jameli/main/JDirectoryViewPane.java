@@ -18,14 +18,13 @@ package earth.eu.jtzipi.jameli.main;
 
 import earth.eu.jtzipi.jameli.FXProperties;
 import earth.eu.jtzipi.modules.node.path.IPathNode;
+import javafx.animation.ScaleTransition;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -33,7 +32,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -45,8 +43,10 @@ import java.util.stream.Collectors;
  * <br/>
  * We should consider place a static link to parent folder.
  * If the folder is empty display some info.
+ * <br/>
  * The currently displayed folder is sync with {@linkplain JBreadCrumbPathPanel} and
- *
+ * {@linkplain JDirTreePane}.
+ * Sync dir via {@link FXProperties#FX_CURRENT_DIR_PATH}.
  *
  * </p>
  *
@@ -54,11 +54,9 @@ import java.util.stream.Collectors;
  */
 public class JDirectoryViewPane extends FlowPane {
 
-    private final ObservableList<Label> fileLabelL = FXCollections.observableArrayList();
-    private ObjectProperty<Predicate<IPathNode>> fxFileFilterProp;
 
-    private DoubleProperty fxGapHoriProp = new SimpleDoubleProperty( this, "", 9D );
-    private DoubleProperty fxGapVertProp = new SimpleDoubleProperty( this, "", 9D );
+    private final DoubleProperty fxGapHoriProp = new SimpleDoubleProperty( this, "FX_DIR_VIEW_GAP_H_PROP", 9D );
+    private final DoubleProperty fxGapVertProp = new SimpleDoubleProperty( this, "FX_DIR_VIEW_GAP_V_PROP", 9D );
 
     JDirectoryViewPane() {
 
@@ -70,19 +68,30 @@ public class JDirectoryViewPane extends FlowPane {
         FXProperties.FX_CURRENT_DIR_PATH.addListener( this::onPathChanged );
     }
 
+    private static List<Tile> nodeChanged( IPathNode pn ) {
+// populate all nodes based
+        List<Tile> tl = pn.getSubnodes().stream().filter( FXProperties.FX_PATH_NODE_FILTER_PROP.getValue() ).map( Tile::new ).collect( Collectors.toList() );
+        // add node if  parent is not  root
+        if ( !pn.getValue().equals( FXProperties.ROOT_PATH ) ) {
+
+            IPathNode parentNode = ( IPathNode ) pn.getParent();
+            tl.add( 0, new Tile( parentNode ) );
+        }
+
+
+        return tl;
+    }
+
     private void createDirectoryViewPane() {
 
         // get root node
         IPathNode root = FXProperties.FX_CURRENT_DIR_PATH.getValue();
-        // populate all nodes based
-        List<Tile> tileList = root.getSubnodes().stream().map( Tile::ofNode ).collect( Collectors.toList() );
-        // add root node
-        tileList.add( 0, Tile.ofNode( root ) );
+
+        List<Tile> tileL = nodeChanged( root );
 
         this.hgapProperty().bind( fxGapHoriProp );
         this.vgapProperty().bind( fxGapVertProp );
-        this.getChildren().setAll( tileList );
-
+        this.getChildren().setAll( tileL );
     }
 
     private void onPathChanged( ObservableValue<? extends IPathNode> obp, IPathNode oldNode, IPathNode newNode ) {
@@ -92,26 +101,81 @@ public class JDirectoryViewPane extends FlowPane {
             return;
         }
 
+        // collect and set all nodes
+
+        List<Tile> dirL = nodeChanged( newNode );
+        getChildren().setAll( dirL );
 
     }
 
     private static class Tile extends Label {
 
         private Background bgHover = new Background( new BackgroundFill( Color.rgb( 10, 10, 246, 0.5D ), CornerRadii.EMPTY, Insets.EMPTY ) );
+        private final IPathNode node;
+        //
+        private ScaleTransition growST;
+        private boolean up; // dir up
 
-        private Tile() {
-
-
-            setOnMouseEntered( mouseEvent -> setBackground( bgHover ) );
-            setOnMouseExited( mouseEvent -> setBackground( null ) );
+        /**
+         * @param pathNode
+         */
+        private Tile( IPathNode pathNode ) {
+            this( pathNode, false );
         }
 
-        private static Tile ofNode( IPathNode pathNode ) {
-            Tile tile = new Tile();
-            tile.setText( pathNode.getName() );
-            tile.setMinHeight( 25D );
-            tile.setMinWidth( 99D );
-            return tile;
+        private Tile( IPathNode pathNode, boolean dirUpProp ) {
+            this.node = pathNode;
+            this.up = dirUpProp;
+
+            this.setText( pathNode.getName() );
+            this.setMinHeight( 25D );
+
+            growST = new ScaleTransition();
+            growST.setNode( this );
+            growST.setFromX( 1.0D );
+            growST.setToX( 1.2D );
+            //growST.setByX( 1.2D );
+
+// ouseEvent -> setBackground( bgHover )-> setBackground( null )
+            setOnMouseEntered( this::onMouseEnter );
+            setOnMouseExited( this::onMouseExit );
+            setOnMouseClicked( this::onMouseClicked );
+        }
+
+        private boolean isUp() {
+            return up;
+        }
+
+        private void onMouseEnter( MouseEvent me ) {
+
+            growST.setRate( 1D );
+            growST.play();
+        }
+
+        private void onMouseExit( MouseEvent me ) {
+
+
+            growST.setRate( -1D );
+            growST.play();
+        }
+
+        private void onMouseClicked( MouseEvent me ) {
+
+            if ( me.getClickCount() == 2 ) {
+
+                // show new dir
+                if ( node.isDir() ) {
+
+                    // what to show
+                    IPathNode dir = isUp() ? ( IPathNode ) node.getParent() : this.node;
+
+                    FXProperties.FX_CURRENT_DIR_PATH.setValue( dir );
+
+
+                }
+
+            }
+
         }
     }
 }
