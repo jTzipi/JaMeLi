@@ -43,8 +43,10 @@
 
         <jackson.version>2.10.3</jackson.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <hibernate.version>5.4.10</hibernate.version>
-        <cfxversion>8.40.14</cfxversion>
+        <hibernate.version>5.4.17.Final</hibernate.version>
+        <hibernate-validation.version>6.1.5.Final</hibernate-validation.version>
+        <dbh2.version>1.4.200</dbh2.version>
+        <cfx.version>8.40.14</cfx.version>
         <modules.version>0.5.1</modules.version>
     </properties>
 
@@ -70,12 +72,34 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
-
+            <!-- C FX -->
             <dependency>
                 <groupId>org.controlsfx</groupId>
                 <artifactId>controlsfx</artifactId>
-                <version>${cfxversion}</version>
+                <version>${cfx.version}</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${dbh2.version}</version>
+
+            </dependency>
+
+
+            <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validation.version}</version>
+            </dependency>
+
             <!-- Modules :: node -->
             <dependency>
                 <groupId>earth.eu.jtzipi</groupId>
