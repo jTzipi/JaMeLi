@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+
 /**
  * Main class.
  *
@@ -35,6 +36,7 @@ import java.io.IOException;
 public final class JaMeLi extends Application {
     private static final Logger LOGGER = LoggerFactory.getLogger( "JaMeLi" );
 
+
     /**
      * Main function.
      *
@@ -42,6 +44,28 @@ public final class JaMeLi extends Application {
      */
     public static void main( String[] args ) {
         launch( args );
+    }
+
+    /**
+     * Prior GUI start we have read properties and resources.
+     */
+    @Override
+    public void init() {
+
+        try {
+
+            // load global properties
+            GlobalGadi.init();
+            // load resource
+            Resources.init();
+            Resources.loadResources().thenRun( () -> LOGGER.info( "Resource read" ) );
+
+            // Todo: read from ini
+            FXProperties.FX_CURRENT_DIR_PATH.setValue( RegularPathNode.of( FXProperties.ROOT_PATH, null ) );
+        } catch ( IOException e ) {
+            LOGGER.error( "[?] could not init", e );
+            Platform.exit();
+        }
     }
 
     /**
@@ -60,16 +84,6 @@ public final class JaMeLi extends Application {
     public void start( final Stage stage ) {
         FXProperties.setMainStage( stage );
 
-        try {
-            Resources.init();
-            Resources.loadResources().thenRun( () -> LOGGER.info( "Resource read" ) );
-
-            // Todo: read from ini
-            FXProperties.FX_CURRENT_DIR_PATH.setValue( RegularPathNode.of( FXProperties.ROOT_PATH, null ) );
-        } catch ( IOException e ) {
-            LOGGER.error( "[?] could not init", e );
-            Platform.exit();
-        }
 
         initStage();
     }

@@ -16,13 +16,16 @@
 
 package earth.eu.jtzipi.jameli.db.entity;
 
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "media_audio")
 public class MediaAudio extends MediaAudioVideo {
 
 
+    @Column
     String type;
 
 }

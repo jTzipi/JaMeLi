@@ -14,20 +14,40 @@
  *    limitations under the License.
  */
 
-package earth.eu.jtzipi.jameli.db.dao;
+package earth.eu.jtzipi.jameli.db.entity;
 
-import org.hibernate.SessionFactory;
+import javax.persistence.*;
+import javax.validation.constraints.Min;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CrudService implements IDao {
+@Entity(name = "RatingModel")
+@Table(name = "rating_model")
+public class RatingModel {
 
-    private SessionFactory sf;
+    @Id
+    @GeneratedValue
+    long id;
 
-    private CrudService( SessionFactory sessionFactory ) {
-        this.sf = sessionFactory;
-    }
+    @Column
+    String type;
 
-    public static CrudService of( SessionFactory sf ) {
-        return new CrudService( sf );
-    }
+    @Column
+    @Min(value = 0)
+    int min;
 
+    @Column
+    @Min(value = 1)
+    int max;
+
+    @Column
+    @Min(value = 1)
+    int step;
+
+    @OneToMany(
+            mappedBy = "rating"
+            , cascade = CascadeType.ALL
+            , orphanRemoval = true
+    )
+    private List<Media> mediaL = new ArrayList<>();
 }

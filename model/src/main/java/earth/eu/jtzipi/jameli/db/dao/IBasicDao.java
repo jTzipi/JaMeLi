@@ -14,30 +14,25 @@
  *    limitations under the License.
  */
 
-package earth.eu.jtzipi.jameli.db.entity;
+package earth.eu.jtzipi.jameli.db.dao;
 
-import javax.persistence.*;
-import javax.validation.constraints.Min;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity(name = "Rating")
-@Table(name = "rating")
-public class Rating {
+import javax.persistence.PersistenceException;
 
-    @Id
-    @GeneratedValue
-    long id;
 
-    String type;
+/**
+ * @param <T>
+ */
+public interface IBasicDao<T, TI> {
 
-    @Min(value = 0)
-    int rating;
+    /**
+     * Default <u>C</u>reate operation.
+     *
+     * @param db datatable
+     * @throws PersistenceException
+     * @throws NullPointerException
+     */
+    TI create( T db );
 
-    @OneToMany(
-            mappedBy = "rating"
-            , cascade = CascadeType.ALL
-            , orphanRemoval = true
-    )
-    private List<Media> mediaL = new ArrayList<>();
+    T read( Long id ) throws PersistenceException;
 }

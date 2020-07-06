@@ -16,6 +16,7 @@
 
 package earth.eu.jtzipi.jameli.db.entity;
 
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,8 +24,21 @@ import java.util.List;
 
 /**
  * Default Category.
+ * <p>
+ * This DB table contain information about a media category.
+ * <br/>
+ * <br/>
+ * Each Cat have a
+ * <ul>
+ *     <li>Parent</li>
+ *     <li>Zero or more sub categories</li>
+ *     <li>Short text</li>
+ *     <li>Detailed text</li>
+ *     <li>Optional Decoration</li>
+ * </ul>
  */
 @Entity
+@Table(name = "category")
 public final class Cat {
 
     @Id
@@ -37,7 +51,8 @@ public final class Cat {
     @OneToMany
     private List<Cat> subCatL = new ArrayList<>();
 
-    @Column
+    @NaturalId
+    @Column(nullable = false)
     private String text;
 
     @Column
@@ -52,6 +67,11 @@ public final class Cat {
 
     }
 
+    /**
+     * Return parent category or null if root.
+     *
+     * @return parent category
+     */
     public Cat getParent() {
         return parent;
     }

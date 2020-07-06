@@ -50,7 +50,16 @@
             <groupId>earth.eu.jtzipi</groupId>
             <artifactId>utils</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>earth.eu.jtzipi</groupId>
+            <artifactId>io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>earth.eu.jtzipi.jameli</groupId>
+            <artifactId>model</artifactId>
+            <version>0.1.0</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

@@ -17,6 +17,7 @@
 package earth.eu.jtzipi.jameli;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Category IF.
@@ -63,5 +64,5 @@ public interface ICat extends IModel {
      *
      * @return decoration
      */
-    IDecoratable getDecor();
+    Optional<IDecoratable> getDecor();
 }

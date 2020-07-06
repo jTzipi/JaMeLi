@@ -16,6 +16,8 @@
 
 package earth.eu.jtzipi.jameli.sql;
 
+import earth.eu.jtzipi.jameli.db.entity.Cat;
+import earth.eu.jtzipi.modules.io.IOUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -43,11 +45,31 @@ public enum HibernateUtil {
         if ( null == sf ) {
 
             sql.setProperty( Environment.PASS, String.copyValueOf( pw ) );
+
             sf = createSeFa( sql );
 
 
             Arrays.fill( pw, '!' );
         }
+    }
+
+    public static void init() {
+
+        String url = IOUtils.getProgramDir().resolve( "res/db/jamelidb.mv.db" ).toString();
+        url = "jdbc:h2:" + url;
+
+        Properties prop = new Properties();
+        prop.setProperty( Environment.DIALECT, "org.hibernate.dialect.H2Dialect" );
+        prop.setProperty( Environment.PASS, "$Gadi!Super" );
+        prop.setProperty( Environment.USER, "JaMeLi" );
+        prop.setProperty( Environment.URL, url );
+        prop.setProperty( Environment.POOL_SIZE, "1" );
+        prop.setProperty( Environment.DRIVER, "org.h2.driver" );
+
+
+        prop.setProperty( Environment.HBM2DDL_AUTO, "true" );
+
+        sf = createSeFa( prop );
     }
 
     private static SessionFactory createSeFa( final Properties prop ) {
@@ -56,7 +78,7 @@ public enum HibernateUtil {
 
 
         cf.setProperties( prop );
-
+        cf.addAnnotatedClass( Cat.class );
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings( cf.getProperties() ).build();

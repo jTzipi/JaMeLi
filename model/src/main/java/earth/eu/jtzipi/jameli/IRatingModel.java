@@ -16,8 +16,32 @@
 
 package earth.eu.jtzipi.jameli;
 
+
 /**
+ * Each media can have a rating.
  *
+ * @author jTzipi
  */
-public interface IRating {
+public interface IRatingModel {
+
+    /**
+     * Rating step.
+     *
+     * @return rating
+     */
+    int getStep();
+
+    /**
+     * Return max rating.
+     *
+     * @return max
+     */
+    int getMax();
+
+    /**
+     * Return min rating.
+     *
+     * @return min
+     */
+    int getMin();
 }

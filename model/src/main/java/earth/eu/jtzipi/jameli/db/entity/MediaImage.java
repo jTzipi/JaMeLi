@@ -16,14 +16,21 @@
 
 package earth.eu.jtzipi.jameli.db.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 
 @Entity(name = "MediaImage")
-public class MediaImage extends Media {
+@Table(name = "media_image")
+public final class MediaImage extends Media {
 
 
-    String type;
+    @Column
+    private String type;
+
+    @Column(nullable = false)
     private int width;
+    @Column(nullable = false)
     private int height;
 }

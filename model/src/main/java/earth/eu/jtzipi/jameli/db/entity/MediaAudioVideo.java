@@ -32,9 +32,9 @@ public class MediaAudioVideo extends Media {
     @JoinColumn(name = "spot_id")
     private List<Spot> spotList = new ArrayList<>();
 
-
+    @Column(nullable = false)
     private String codec;
-    @Column
+    @Column(nullable = false)
     private long timeInSecond;
 
 

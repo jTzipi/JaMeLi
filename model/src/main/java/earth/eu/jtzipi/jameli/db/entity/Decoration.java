@@ -16,24 +16,32 @@
 
 package earth.eu.jtzipi.jameli.db.entity;
 
+import earth.eu.jtzipi.jameli.db.converter.ColorConverter;
+import earth.eu.jtzipi.jameli.db.converter.ShapeConverter;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
+import javafx.scene.shape.SVGPath;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public final class Decoration {
 
+
     @Id
+    @GeneratedValue
     Long id;
+
+
     @Column
     private String path;
+
     @Column
+    @Convert(converter = ColorConverter.class)
     private Color color;
+
     @Column
-    private Shape shape;
+    @Convert(converter = ShapeConverter.class)
+    private SVGPath shape;
 
 
 }

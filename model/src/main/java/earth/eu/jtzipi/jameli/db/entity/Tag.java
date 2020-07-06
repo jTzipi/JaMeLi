@@ -23,7 +23,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * A Tag for Media.
+ */
 @Entity(name = "Tag")
 public final class Tag {
 

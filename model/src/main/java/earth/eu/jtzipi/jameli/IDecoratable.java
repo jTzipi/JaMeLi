@@ -17,7 +17,7 @@
 package earth.eu.jtzipi.jameli;
 
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
+import javafx.scene.shape.SVGPath;
 
 import java.nio.file.Path;
 
@@ -50,5 +50,5 @@ public interface IDecoratable {
      *
      * @return shape
      */
-    Shape getShape();
+    SVGPath getSVGPath();
 }

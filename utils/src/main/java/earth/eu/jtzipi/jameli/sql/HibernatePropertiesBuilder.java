@@ -21,22 +21,22 @@ import earth.eu.jtzipi.modules.utils.IBuilder;
 import java.util.Objects;
 import java.util.Properties;
 
-public final class HibernateProperties implements IBuilder<Properties> {
+public final class HibernatePropertiesBuilder implements IBuilder<Properties> {
 
 
     private final Sql sql;
     private String url;
     private String user;
 
-    private HibernateProperties( Sql sql ) {
+    private HibernatePropertiesBuilder( Sql sql ) {
         this.sql = sql;
     }
 
-    public static HibernateProperties ofMySQL() {
-        return new HibernateProperties( Sql.MYSQL );
+    public static HibernatePropertiesBuilder ofMySQL() {
+        return new HibernatePropertiesBuilder( Sql.MYSQL );
     }
 
-    public HibernateProperties user( final String user ) {
+    public HibernatePropertiesBuilder user( final String user ) {
         this.user = Objects.requireNonNull( user );
         return this;
     }

@@ -17,23 +17,25 @@
 package earth.eu.jtzipi.jameli.db.entity;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 
 @Entity
 @Table(name = "media_video")
-public class MediaVideo extends MediaAudioVideo {
+public final class MediaVideo extends MediaAudioVideo {
 
-
+    @Column
     private String type;
 
     private int width;
 
     private int height;
 
+    @Column
     private boolean sub;
-
+    @Column
     private String lang;
 
 }

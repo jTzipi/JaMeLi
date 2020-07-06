@@ -19,8 +19,12 @@ package earth.eu.jtzipi.jameli.db.converter;
 import javafx.scene.paint.Color;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
+@Converter(autoApply = true)
 public class ColorConverter implements AttributeConverter<javafx.scene.paint.Color, String> {
+
+
     @Override
     public String convertToDatabaseColumn( Color color ) {
         return null;

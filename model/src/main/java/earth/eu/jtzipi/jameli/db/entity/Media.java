@@ -16,7 +16,6 @@
 
 package earth.eu.jtzipi.jameli.db.entity;
 
-
 import earth.eu.jtzipi.jameli.db.converter.LocalDateTimeConverter;
 
 import javax.persistence.*;
@@ -38,7 +37,8 @@ public class Media {
     Cat cat;
 
     @Id
-    String id;
+    @GeneratedValue
+    Long id;
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
@@ -51,15 +51,19 @@ public class Media {
     )
     Set<Tag> tagS = new HashSet<>();
 
-    @Column
+    @Column(name = "archive_date")
     @Convert(converter = LocalDateTimeConverter.class)
     LocalDateTime archiveLDT;
 
-
+    @Column
     String name;
+    @Column
     String desc;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    Rating rating;
-
+    RatingModel ratingModel;
+    @Column
+    int rating;
+    @Column
+    String hash;
 }

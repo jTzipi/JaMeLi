@@ -27,7 +27,7 @@ import java.util.List;
  *      <li>A name</li>
  *      <li>A Category -> {@linkplain ICat}</li>
  *      <li>A list of tags -> {@linkplain ITag}</li>
- *      <li>A Rating -> {@linkplain IRating}</li>
+ *      <li>A Rating -> {@linkplain IRatingModel}</li>
  *      <li>A archive date -> {@link LocalDateTime}</li>
  *      <li>An optional Description</li>
  *  </ul>
@@ -45,7 +45,9 @@ public interface IMedia extends IModel {
     List<ITag> getTagList();
 
     /**
-     * @return
+     * Return category of media.
+     *
+     * @return category
      */
     ICat getCategory();
 
@@ -54,7 +56,7 @@ public interface IMedia extends IModel {
      *
      * @return
      */
-    IRating getRating();
+    IRatingModel getRating();
 
     /**
      * Return name of this media.
@@ -76,4 +78,11 @@ public interface IMedia extends IModel {
      * @return archive date.
      */
     LocalDateTime getArchiveDate();
+
+    /**
+     * Return a hash value of media.
+     *
+     * @return hash
+     */
+    String getHash();
 }
